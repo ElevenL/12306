@@ -187,7 +187,7 @@ class BookTicket(object):
 
         res = Login.session.post(API.confirmSingleForQueue, data= data)
         print(res.json())
-        if res.json()['status']['submitStatus'] == 'true':
+        if res.json()['data']['submitStatus']:
             print('已完成订票，请前往12306进行支付')
         else:
             print('订票失败,请稍后重试!')

@@ -1,8 +1,8 @@
 from  codePlatform import  CJYClient
 # 12306登录用户名
-userName = 'lhq2818@163.com'
+userName = 'xxxxxx'
 # 12306密码
-password = 'lhqFH2818'
+password = 'xxxxxxxxx'
 # 超级鹰打码平台
 chaoJiYing = CJYClient('你的超级鹰平台账户', '你的超级鹰平台密码','896970')
 # 验证码图片路径
