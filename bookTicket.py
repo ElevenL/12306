@@ -12,21 +12,24 @@ class BookTicket(object):
     def __init__(self):
         self.session = Login.session
 
-    def bookTickets(self,username, traindate, fromstation, tostation, seattype):
+    def bookTickets(self,username, traindate, fromstation, tostation, seattype, trainnames=[]):
         queryData, trainDicts = LeftTicket().queryTickets(traindate, fromstation, tostation)
         # 这个地方座位类型也是不是固定的，如硬卧有时候是3，有时是A3
         # seatType = input('请输入车票类型,WZ无座,F动卧,M一等座,O二等座,1硬座,3硬卧,4软卧,6高级软卧,9商务座:\n')
         i = 0
         for trainDict in trainDicts:
             if trainDict[seattype]== Utility.greenColor('有') or trainDict[seattype].isdigit():
+                if trainnames != [] and trainDict['trainName'] not in trainnames:
+                    continue
                 print('为您选择的车次为{},正在为您抢票中……'.format(Utility.redColor(trainDict['trainName'])))
                 self.submitOrderRequest(queryData,trainDict)
                 self.getPassengerDTOs(seattype,username,trainDict)
-                return
+                return True
             else:
                 i += 1
                 if i >=len(trainDicts):  # 遍历所有车次后都未能查到座位，则打印错误信息
                     print(Utility.redColor('Error:系统未能查询到{}座位类型存有余票'.format(seattype)))
+                    return False
                 continue
 
     def submitOrderRequest(self, queryData, trainDict):
