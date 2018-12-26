@@ -120,8 +120,8 @@ class Utility(object):
 
     # 输入出发地和目的地
     @classmethod
-    def inputStation(self, str):
-        station = input('{}：\n'.format(str))
+    def inputStation(self, station):
+        # station = input('{}：\n'.format(str))
         if not station in StationCodes().getCodesDict().keys():
             print(Colored.red('Error:车站列表里无法查询到{}'.format(station)))
             station = input('{}：\n'.format(str))
@@ -129,8 +129,8 @@ class Utility(object):
 
     # 输入乘车日期
     @classmethod
-    def inputTrainDate(self):
-        trainDate = input('请输入购票时间,格式为2018-01-01:\n')
+    def inputTrainDate(self, trainDate):
+        # trainDate = input('请输入购票时间,格式为2018-01-01:\n')
         try:
             trainTimeStruct = time.strptime(trainDate, "%Y-%m-%d")
         except:

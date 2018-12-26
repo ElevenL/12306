@@ -10,10 +10,10 @@ class LeftTicket(object):
     def __init__(self):
         self.session = Login.session  # 还是那句话，使用同一个session
 
-    def queryTickets(self):
+    def queryTickets(self, traindate, fromstation, tostation):
 
         StationCodes.getAndSaveStationCodes(self.session) # 先判断电报码文件是否存在，不存在再下载保存
-        queryData = self.getQueryData() # 获取trainDate,fromStationCode,toStationCode，fromStation和toStation
+        queryData = self.getQueryData(traindate, fromstation, tostation) # 获取trainDate,fromStationCode,toStationCode，fromStation和toStation
 
         parameters = {
             'leftTicketDTO.train_date'  : queryData['trainDate'],        # 日期，格式为2018-08-28
@@ -111,12 +111,12 @@ class LeftTicket(object):
         self.prettyPrint(trains,queryData) # 按照一定格式打印
         return trainDicts
 
-    def getQueryData(self):
-        trainDate = Utility.inputTrainDate()                  # 日期
-        fromStation = Utility.inputStation('请输入出发地')     # 出发地
-        toStation = Utility.inputStation('请输入目的地')       # 目的地
-        fromStationCode = Utility.getStationCode(fromStation) # 出发地电报码
-        toStationCode = Utility.getStationCode(toStation)     # 目的地电报码
+    def getQueryData(self, traindate, fromstation, tostation):
+        trainDate = Utility.inputTrainDate(traindate)           # 日期
+        fromStation = Utility.inputStation(fromstation)         # 出发地
+        toStation = Utility.inputStation(tostation)             # 目的地
+        fromStationCode = Utility.getStationCode(fromStation)   # 出发地电报码
+        toStationCode = Utility.getStationCode(toStation)       # 目的地电报码
 
         queryData = {
             'fromStation':fromStation,

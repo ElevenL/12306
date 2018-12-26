@@ -12,21 +12,21 @@ class BookTicket(object):
     def __init__(self):
         self.session = Login.session
 
-    def bookTickets(self,username):
-        queryData, trainDicts = LeftTicket().queryTickets()
+    def bookTickets(self,username, traindate, fromstation, tostation, seattype):
+        queryData, trainDicts = LeftTicket().queryTickets(traindate, fromstation, tostation)
         # 这个地方座位类型也是不是固定的，如硬卧有时候是3，有时是A3
-        seatType = input('请输入车票类型,WZ无座,F动卧,M一等座,O二等座,1硬座,3硬卧,4软卧,6高级软卧,9商务座:\n')
+        # seatType = input('请输入车票类型,WZ无座,F动卧,M一等座,O二等座,1硬座,3硬卧,4软卧,6高级软卧,9商务座:\n')
         i = 0
         for trainDict in trainDicts:
-            if trainDict[seatType]== Utility.greenColor('有') or trainDict[seatType].isdigit():
+            if trainDict[seattype]== Utility.greenColor('有') or trainDict[seattype].isdigit():
                 print('为您选择的车次为{},正在为您抢票中……'.format(Utility.redColor(trainDict['trainName'])))
                 self.submitOrderRequest(queryData,trainDict)
-                self.getPassengerDTOs(seatType,username,trainDict)
+                self.getPassengerDTOs(seattype,username,trainDict)
                 return
             else:
                 i += 1
                 if i >=len(trainDicts):  # 遍历所有车次后都未能查到座位，则打印错误信息
-                    print(Utility.redColor('Error:系统未能查询到{}座位类型存有余票'.format(seatType)))
+                    print(Utility.redColor('Error:系统未能查询到{}座位类型存有余票'.format(seattype)))
                 continue
 
     def submitOrderRequest(self, queryData, trainDict):
@@ -116,7 +116,6 @@ class BookTicket(object):
 
         res = self.session.post(API.checkOrderInfo, data=data)
         dict = res.json()
-        print(dict)
         if dict['data']['submitStatus']:
             print('系统校验订单信息成功')
             if dict['data']['ifShowPassCode'] == 'Y':
@@ -186,7 +185,6 @@ class BookTicket(object):
         }
 
         res = Login.session.post(API.confirmSingleForQueue, data= data)
-        print(res.json())
         if res.json()['data']['submitStatus']:
             print('已完成订票，请前往12306进行支付')
         else:
