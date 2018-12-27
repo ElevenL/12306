@@ -43,7 +43,7 @@ class LeftTicket(object):
 
                 trainDict['trainNumber']     = trainInfo[2]  #5l0000D35273
 
-                trainDict['trainName']       = trainInfo[3]    # 车次名称，如D352
+                trainDict['trainName']       = trainInfo[3].split('[')[0]   # 车次名称，如D352
 
                 trainDict['fromTelecode']    = trainInfo[6] #出发地电报码
 

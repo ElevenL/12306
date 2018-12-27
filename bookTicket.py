@@ -4,6 +4,7 @@ from urllib import parse
 from APIs import API
 from queryTicket import LeftTicket
 from login import Login
+from message import *
 
 
 
@@ -189,6 +190,7 @@ class BookTicket(object):
 
         res = Login.session.post(API.confirmSingleForQueue, data= data)
         if res.json()['data']['submitStatus']:
+            send_msg('[12306]: buy ticket success! go to pay!')
             print('已完成订票，请前往12306进行支付')
         else:
             print('订票失败,请稍后重试!')

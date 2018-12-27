@@ -1,8 +1,10 @@
+# encoding: UTF-8
 import const
 import re
 from utility import  Utility
 from color import Color
 from APIs import API
+from message import *
 
 class Login(object):
     session = Utility.getSession()  # 创建session
@@ -30,6 +32,7 @@ class Login(object):
     def captchaCheck(self):
         # 手动验证
         self.getCaptchaAnswer()
+        send_msg('[12306]:please input capcha code')
         imgLocation = input("请输入验证码图片位置，以英文状态下的分号','分割:\n")
         coordinates = {'1':'35,35',  '2':'105,35',  '3':'175,35', '4':'245,35',
                        '5':'35,105', '6':'105,105', '7':'175,105','8':'245,105'}
