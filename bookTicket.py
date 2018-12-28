@@ -18,14 +18,20 @@ class BookTicket(object):
         # 这个地方座位类型也是不是固定的，如硬卧有时候是3，有时是A3
         # seatType = input('请输入车票类型,WZ无座,F动卧,M一等座,O二等座,1硬座,3硬卧,4软卧,6高级软卧,9商务座:\n')
         i = 0
+        # 将列表转化为字典
+        _dict = {}
         for trainDict in trainDicts:
-            if trainDict[seattype]== Utility.greenColor('有') or trainDict[seattype].isdigit():
-                if trainnames != [] and trainDict['trainName'] not in trainnames:
-                    continue
-                print('为您选择的车次为{},正在为您抢票中……'.format(Utility.redColor(trainDict['trainName'])))
+            _dict[trainDict['trainName']] = trainDict
+        # 按指定车次顺序遍历车票信息
+        if len(trainnames) == 0:
+            print('请输入车次，按照优先级。')
+            return False
+        for trainName in trainnames:
+            if _dict[trainName][seattype] == Utility.greenColor('有') or _dict[trainName][seattype].isdigit():
+                print('为您选择的车次为{},正在为您抢票中……'.format(Utility.redColor(trainName)))
                 self.checkUserLogin()
-                self.submitOrderRequest(queryData,trainDict)
-                self.getPassengerDTOs(seattype,usernames,trainDict)
+                self.submitOrderRequest(queryData, _dict[trainName])
+                self.getPassengerDTOs(seattype, usernames, _dict[trainName])
                 return True
             else:
                 i += 1
