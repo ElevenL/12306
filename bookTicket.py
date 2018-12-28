@@ -98,13 +98,14 @@ class BookTicket(object):
 
     def checkOrderInfo(self,seatType,repeatSubmitToken,passenger):
 
+        # 多个乘客，使用'_'连接
         passengerTicketStr = '{},{},{},{},{},{},{},N'.format(seatType, passenger['passenger_flag'],
                                                                     passenger['passenger_type'],
                                                                     passenger['passenger_name'],
                                                                     passenger['passenger_id_type_code'],
                                                                     passenger['passenger_id_no'],
                                                                     passenger['mobile_no'])
-
+        # 多个乘客，直接拼接
         oldPassengerStr = '{},{},{},1_'.format(passenger['passenger_name'], passenger['passenger_id_type_code'],
                                                   passenger['passenger_id_no'])
         data = {
@@ -162,13 +163,14 @@ class BookTicket(object):
 
     def confirmSingleForQueue(self,seatType,repeatSubmitToken,keyCheckIsChange,passenger,trainDict):
 
+        # 多个乘客，使用'_'连接
         passengerTicketStr = '{},{},{},{},{},{},{},N'.format(seatType, passenger['passenger_flag'],
                                                              passenger['passenger_type'],
                                                              passenger['passenger_name'],
                                                              passenger['passenger_id_type_code'],
                                                              passenger['passenger_id_no'],
                                                              passenger['mobile_no'])
-
+        # 多个乘客，直接拼接
         oldPassengerStr = '{},{},{},1_'.format(passenger['passenger_name'], passenger['passenger_id_type_code'],
                                                passenger['passenger_id_no'])
 
