@@ -13,7 +13,7 @@ class BookTicket(object):
     def __init__(self):
         self.session = Login.session
 
-    def bookTickets(self,username, traindate, fromstation, tostation, seattype, trainnames=[]):
+    def bookTickets(self,usernames, traindate, fromstation, tostation, seattype, trainnames=[]):
         queryData, trainDicts = LeftTicket().queryTickets(traindate, fromstation, tostation)
         # 这个地方座位类型也是不是固定的，如硬卧有时候是3，有时是A3
         # seatType = input('请输入车票类型,WZ无座,F动卧,M一等座,O二等座,1硬座,3硬卧,4软卧,6高级软卧,9商务座:\n')
@@ -25,7 +25,7 @@ class BookTicket(object):
                 print('为您选择的车次为{},正在为您抢票中……'.format(Utility.redColor(trainDict['trainName'])))
                 self.checkUserLogin()
                 self.submitOrderRequest(queryData,trainDict)
-                self.getPassengerDTOs(seattype,username,trainDict)
+                self.getPassengerDTOs(seattype,usernames,trainDict)
                 return True
             else:
                 i += 1
@@ -71,7 +71,7 @@ class BookTicket(object):
             return
 
 
-    def getPassengerDTOs(self,seatType,username,trainDict):
+    def getPassengerDTOs(self,seatType,usernames,trainDict):
 
         # step 1: initDc
         repeatSubmitToken, keyCheckIsChange = self.initDC()
@@ -85,29 +85,41 @@ class BookTicket(object):
         res = self.session.post(API.getPassengerDTOs, data=data)
         passengers = res.json()['data']['normal_passengers']
 
+        selectPassengers = []
         for passenger in passengers:
-            if passenger['passenger_name'] == username:
-                # step 3: Check order
-                self.checkOrderInfo(seatType, repeatSubmitToken, passenger)
-                # step 4:获取队列
-                self.getQueueCount(seatType, repeatSubmitToken, keyCheckIsChange, trainDict, passenger)
-                return
-            else:
-                print('无法购票')
+            if passenger['passenger_name'] in usernames:
+                selectPassengers.append(passenger)
+            # else:
+            #     print('无法购票')
+            #     return
+        if len(selectPassengers) == 0:
+            print('没用选中乘客，无法购票')
+            return
+        # step 3: Check order
+        self.checkOrderInfo(seatType, repeatSubmitToken, selectPassengers)
+        # step 4:获取队列
+        self.getQueueCount(seatType, repeatSubmitToken, keyCheckIsChange, trainDict, selectPassengers)
+        return
 
 
-    def checkOrderInfo(self,seatType,repeatSubmitToken,passenger):
+    def checkOrderInfo(self,seatType,repeatSubmitToken,passengers):
 
-        # 多个乘客，使用'_'连接
-        passengerTicketStr = '{},{},{},{},{},{},{},N'.format(seatType, passenger['passenger_flag'],
-                                                                    passenger['passenger_type'],
-                                                                    passenger['passenger_name'],
-                                                                    passenger['passenger_id_type_code'],
-                                                                    passenger['passenger_id_no'],
-                                                                    passenger['mobile_no'])
-        # 多个乘客，直接拼接
-        oldPassengerStr = '{},{},{},1_'.format(passenger['passenger_name'], passenger['passenger_id_type_code'],
-                                                  passenger['passenger_id_no'])
+        passengerTicketStr =''
+        oldPassengerStr = ''
+        for passenger in passengers:
+
+            # 多个乘客，使用'_'连接
+            passengerTicketStr += '{},{},{},{},{},{},{},N'.format(seatType, passenger['passenger_flag'],
+                                                                        passenger['passenger_type'],
+                                                                        passenger['passenger_name'],
+                                                                        passenger['passenger_id_type_code'],
+                                                                        passenger['passenger_id_no'],
+                                                                        passenger['mobile_no'])
+            passengerTicketStr += '_'
+            # 多个乘客，直接拼接
+            oldPassengerStr += '{},{},{},1_'.format(passenger['passenger_name'], passenger['passenger_id_type_code'],
+                                                      passenger['passenger_id_no'])
+        passengerTicketStr = passengerTicketStr[:-1]
         data = {
             '_json_att'          : '',
             'bed_level_order_num': '000000000000000000000000000000',
@@ -161,18 +173,23 @@ class BookTicket(object):
             return
 
 
-    def confirmSingleForQueue(self,seatType,repeatSubmitToken,keyCheckIsChange,passenger,trainDict):
+    def confirmSingleForQueue(self,seatType,repeatSubmitToken,keyCheckIsChange,passengers,trainDict):
 
-        # 多个乘客，使用'_'连接
-        passengerTicketStr = '{},{},{},{},{},{},{},N'.format(seatType, passenger['passenger_flag'],
-                                                             passenger['passenger_type'],
-                                                             passenger['passenger_name'],
-                                                             passenger['passenger_id_type_code'],
-                                                             passenger['passenger_id_no'],
-                                                             passenger['mobile_no'])
-        # 多个乘客，直接拼接
-        oldPassengerStr = '{},{},{},1_'.format(passenger['passenger_name'], passenger['passenger_id_type_code'],
-                                               passenger['passenger_id_no'])
+        passengerTicketStr = ''
+        oldPassengerStr = ''
+        for passenger in passengers:
+            # 多个乘客，使用'_'连接
+            passengerTicketStr += '{},{},{},{},{},{},{},N'.format(seatType, passenger['passenger_flag'],
+                                                                  passenger['passenger_type'],
+                                                                  passenger['passenger_name'],
+                                                                  passenger['passenger_id_type_code'],
+                                                                  passenger['passenger_id_no'],
+                                                                  passenger['mobile_no'])
+            passengerTicketStr += '_'
+            # 多个乘客，直接拼接
+            oldPassengerStr += '{},{},{},1_'.format(passenger['passenger_name'], passenger['passenger_id_type_code'],
+                                                    passenger['passenger_id_no'])
+        passengerTicketStr = passengerTicketStr[:-1]
 
         data = {
             'passengerTicketStr': passengerTicketStr,

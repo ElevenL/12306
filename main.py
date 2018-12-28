@@ -21,7 +21,7 @@ def book1():
         except:
             pass
 
-def book2(name):
+def book2(names):
     '''
     根据坐席类别和车次订票
     :return:
@@ -34,7 +34,7 @@ def book2(name):
     while flag:
         sleep(2)
         try:
-            if bt.bookTickets(name, '2019-01-27', '北京','武汉', 'M', ['G81', 'G309', 'G507']):
+            if bt.bookTickets(names, '2019-01-22', '北京','武汉', 'M', ['G81', 'G309', 'G507']):
                 break
         except Exception as e:
             print(e)
@@ -44,7 +44,7 @@ def book2(name):
 if __name__ == '__main__':
     client = Login()
     client.userLogin()
-    book2('张三')
+    book2(['刘恒强', '张琳乐'])
     # book2('李四')
     # p1 = multiprocessing.Process(target=book2, args=('刘恒强',))
     # p2 = multiprocessing.Process(target=book2, args=('张琳乐',))
