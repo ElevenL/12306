@@ -34,7 +34,7 @@ def book2(name):
     while flag:
         sleep(2)
         try:
-            if bt.bookTickets(name, '2019-01-26', '北京','武汉', 'M', ['G507']):
+            if bt.bookTickets(name, '2019-01-27', '北京','武汉', 'M', ['G81', 'G309']):
                 break
         except:
             pass
