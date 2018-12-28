@@ -34,7 +34,7 @@ def book2(names):
     while flag:
         sleep(2)
         try:
-            if bt.bookTickets(names, '2019-01-22', '北京','武汉', 'M', ['G81', 'G309', 'G507']):
+            if bt.bookTickets(names, '2019-01-22', '北京','武汉', 'O', ['G81', 'G309', 'G507']):
                 break
         except Exception as e:
             print(e)
