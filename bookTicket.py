@@ -191,6 +191,14 @@ class BookTicket(object):
                                                     passenger['passenger_id_no'])
         passengerTicketStr = passengerTicketStr[:-1]
 
+        # 选座
+        if len(passengers) == 1:
+            seats = '1F'
+        elif len(passengers) == 2:
+            seats = '1D1F'
+        else:
+            seats = ''
+
         data = {
             'passengerTicketStr': passengerTicketStr,
             'oldPassengerStr': oldPassengerStr,
@@ -199,7 +207,7 @@ class BookTicket(object):
             'key_check_isChange': keyCheckIsChange,
             'leftTicketStr': trainDict['leftTicket'],
             'train_location': trainDict['trainLocation'],
-            'choose_seats': '',
+            'choose_seats': seats,
             'seatDetailType': '000',
             'whatsSelect': '1',
             'roomType': '00',
