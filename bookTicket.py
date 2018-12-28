@@ -23,6 +23,7 @@ class BookTicket(object):
                 if trainnames != [] and trainDict['trainName'] not in trainnames:
                     continue
                 print('为您选择的车次为{},正在为您抢票中……'.format(Utility.redColor(trainDict['trainName'])))
+                self.checkUserLogin()
                 self.submitOrderRequest(queryData,trainDict)
                 self.getPassengerDTOs(seattype,username,trainDict)
                 return True
@@ -194,3 +195,15 @@ class BookTicket(object):
             print('已完成订票，请前往12306进行支付')
         else:
             print('订票失败,请稍后重试!')
+
+    def checkUserLogin(self):
+        data = {
+            '_json_att': ''
+        }
+        checkUser_res = self.session.post(API.checkUser, data=data)
+        if checkUser_res.json()['data']['flag']:
+            print("用户在线验证成功")
+        else:
+            print('检查用户不在线，请重新登录')
+            Login.userLogin()
+            return
