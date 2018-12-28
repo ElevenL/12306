@@ -205,5 +205,6 @@ class BookTicket(object):
             print("用户在线验证成功")
         else:
             print('检查用户不在线，请重新登录')
-            Login.userLogin()
+            client = Login()
+            client.userLogin()
             return

@@ -34,16 +34,17 @@ def book2(name):
     while flag:
         sleep(2)
         try:
-            if bt.bookTickets(name, '2019-01-27', '北京','武汉', 'M', ['G81', 'G309']):
+            if bt.bookTickets(name, '2019-01-27', '北京','武汉', 'M', ['G81', 'G309', 'G507']):
                 break
-        except:
+        except Exception as e:
+            print(e)
             pass
 
 
 if __name__ == '__main__':
     client = Login()
     client.userLogin()
-    book2('刘恒强')
+    book2('张三')
     # book2('李四')
     # p1 = multiprocessing.Process(target=book2, args=('刘恒强',))
     # p2 = multiprocessing.Process(target=book2, args=('张琳乐',))
