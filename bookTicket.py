@@ -27,7 +27,7 @@ class BookTicket(object):
             print('请输入车次，按照优先级。')
             return False
         for trainName in trainnames:
-            if _dict[trainName][seattype] == Utility.greenColor('有') or _dict[trainName][seattype].isdigit():
+            if trainName in _dict.keys() and (_dict[trainName][seattype] == Utility.greenColor('有') or _dict[trainName][seattype].isdigit()):
                 print('为您选择的车次为{},正在为您抢票中……'.format(Utility.redColor(trainName)))
                 self.checkUserLogin()
                 self.submitOrderRequest(queryData, _dict[trainName])
@@ -35,7 +35,7 @@ class BookTicket(object):
                 return True
             else:
                 i += 1
-                if i >=len(trainDicts):  # 遍历所有车次后都未能查到座位，则打印错误信息
+                if i >=len(trainnames):  # 遍历所有车次后都未能查到座位，则打印错误信息
                     print(Utility.redColor('Error:系统未能查询到{}座位类型存有余票'.format(seattype)))
                     return False
                 continue
