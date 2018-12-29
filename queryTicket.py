@@ -14,7 +14,6 @@ class LeftTicket(object):
 
         StationCodes.getAndSaveStationCodes(self.session) # 先判断电报码文件是否存在，不存在再下载保存
         queryData = self.getQueryData(traindate, fromstation, tostation) # 获取trainDate,fromStationCode,toStationCode，fromStation和toStation
-
         parameters = {
             'leftTicketDTO.train_date'  : queryData['trainDate'],        # 日期，格式为2018-08-28
             'leftTicketDTO.from_station': queryData['fromStationCode'],  # 出发站电报码
@@ -22,7 +21,11 @@ class LeftTicket(object):
             'purpose_codes'             : 'ADULT'  # 0X00是学生票
         }
         res = self.session.get(API.queryTicket,params = parameters)
-        trainDicts = self.getTrainInfo(res.json(), queryData)
+        if res.json()['status']:
+            trainDicts = self.getTrainInfo(res.json(), queryData)
+        else:
+            API.queryTicket = API.queryTicket[:26] + res.json()['c_url']
+            trainDicts = self.getTrainInfo(res.json(), queryData)
         return queryData, trainDicts  # 返回查询数据和车次信息，便于下单时使用
 
     def getTrainInfo(self,result,queryData):
@@ -32,7 +35,6 @@ class LeftTicket(object):
 
         results = result['data']['result']
         maps = result['data']['map']
-
         for item in results:
             trainInfo = item.split('|')
             # for index, item in enumerate(trainInfo, 0):

@@ -8,7 +8,7 @@ class API(object):
     # 车站Code
     stationCode = 'https://kyfw.12306.cn/otn/resources/js/framework/station_name.js'
     # 查余票
-    queryTicket = 'https://kyfw.12306.cn/otn/leftTicket/queryA'
+    queryTicket = 'https://kyfw.12306.cn/otn/leftTicket/queryZ'
     # 查票价
     queryPrice = 'https://kyfw.12306.cn/otn/leftTicket/queryTicketPrice'
 
