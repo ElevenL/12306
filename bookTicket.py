@@ -30,8 +30,10 @@ class BookTicket(object):
             if trainName in _dict.keys() and (_dict[trainName][seattype] == Utility.greenColor('有') or _dict[trainName][seattype].isdigit()):
                 print('为您选择的车次为{},正在为您抢票中……'.format(Utility.redColor(trainName)))
                 self.checkUserLogin()
-                self.submitOrderRequest(queryData, _dict[trainName])
-                self.getPassengerDTOs(seattype, usernames, _dict[trainName])
+                if not self.submitOrderRequest(queryData, _dict[trainName]):
+                    continue
+                if not self.getPassengerDTOs(seattype, usernames, _dict[trainName]):
+                    continue
                 return True
             else:
                 i += 1
@@ -54,11 +56,14 @@ class BookTicket(object):
 
         if dict['status']:
             print('系统提交订单请求成功')
+            return True
         elif dict['messages'] != []:
             if dict['messages'][0] == '车票信息已过期，请重新查询最新车票信息':
                 print('车票信息已过期，请重新查询最新车票信息')
+                return False
         else:
             print("系统提交订单请求失败")
+            return False
 
 
     def initDC(self):
@@ -102,10 +107,12 @@ class BookTicket(object):
             print('没用选中乘客，无法购票')
             return
         # step 3: Check order
-        self.checkOrderInfo(seatType, repeatSubmitToken, selectPassengers)
+        if not self.checkOrderInfo(seatType, repeatSubmitToken, selectPassengers):
+            return False
         # step 4:获取队列
-        self.getQueueCount(seatType, repeatSubmitToken, keyCheckIsChange, trainDict, selectPassengers)
-        return
+        if not self.getQueueCount(seatType, repeatSubmitToken, keyCheckIsChange, trainDict, selectPassengers):
+            return False
+        return True
 
 
     def checkOrderInfo(self,seatType,repeatSubmitToken,passengers):
@@ -173,10 +180,10 @@ class BookTicket(object):
         if res.json()['status']:
             print('系统获取队列信息成功')
             self.confirmSingleForQueue(seatType,repeatSubmitToken,keyCheckIsChange,passenger,trainDict)
-
+            return True
         else:
             print('系统获取队列信息失败')
-            return
+            return False
 
 
     def confirmSingleForQueue(self,seatType,repeatSubmitToken,keyCheckIsChange,passengers,trainDict):
