@@ -53,7 +53,7 @@ class BookTicket(object):
             'undefined'              : ''
         }
         dict = self.session.post(API.submitOrderRequest, data=data).json()
-
+        print('[submitOrderRequest]: %s' % dict)
         if dict['status']:
             print('系统提交订单请求成功')
             return True
@@ -72,6 +72,7 @@ class BookTicket(object):
             '_json_att': ''
         }
         res = self.session.post(API.initDc, data=data)
+        print('[initDC]: %s' % res.text)
         try:
             repeatSubmitToken = re.findall(r"var globalRepeatSubmitToken = '(.*?)'", res.text)[0]
             keyCheckIsChange = re.findall(r"key_check_isChange':'(.*?)'", res.text)[0]
@@ -94,6 +95,7 @@ class BookTicket(object):
             'REPEAT_SUBMIT_TOKEN': repeatSubmitToken
         }
         res = self.session.post(API.getPassengerDTOs, data=data)
+        print('[getPassengerDTOs]: %s' % res.json())
         passengers = res.json()['data']['normal_passengers']
 
         selectPassengers = []
@@ -147,6 +149,7 @@ class BookTicket(object):
 
         res = self.session.post(API.checkOrderInfo, data=data)
         dict = res.json()
+        print('[checkOrderInfo]: %s' % dict)
         if dict['data']['submitStatus']:
             print('系统校验订单信息成功')
             if dict['data']['ifShowPassCode'] == 'Y':
@@ -175,7 +178,7 @@ class BookTicket(object):
         }
 
         res = self.session.post(API.getQueueCount,data= data)
-
+        print('[getQueueCount]: %s' % res.json())
 
         if res.json()['status']:
             print('系统获取队列信息成功')
@@ -230,6 +233,7 @@ class BookTicket(object):
         }
 
         res = Login.session.post(API.confirmSingleForQueue, data= data)
+        print('[confirmSingleForQueue]: %s' % res.json())
         if res.json()['data']['submitStatus']:
             send_msg('[12306]: buy ticket success! go to pay!')
             print('已完成订票，请前往12306进行支付')
