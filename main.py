@@ -3,6 +3,7 @@ from bookTicket import *
 from queryTicket import *
 from bookTicket import *
 from time import sleep
+import datetime
 import multiprocessing
 
 def book(names, date, fromStation, toStation, seatType, trainNames):
@@ -24,7 +25,8 @@ def book(names, date, fromStation, toStation, seatType, trainNames):
 if __name__ == '__main__':
     client = Login()
     client.userLogin()
-    book(['刘恒强', '张琳乐'], '2019-01-27', '北京', '武汉', 'O', ['G81', 'G79', 'G421', 'G405', 'G487', 'G507'])
+    date = (datetime.datetime.now()+datetime.timedelta(days=29)).strftime("%Y-%m-%d")
+    book(['刘恒强', '张琳乐'], date, '北京', '武汉', 'O', ['G81', 'G79', 'G421', 'G405', 'G487', 'G507'])
     # book(['刘恒强', '张琳乐'], '2019-01-27', '武汉', '白沙铺', 'O', ['D3245', 'D3289'])
     # book2('李四')
     # p1 = multiprocessing.Process(target=book, args=('刘恒强',))
