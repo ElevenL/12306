@@ -156,7 +156,7 @@ class BookTicket(object):
                 print('需要再次验证')
                 return True
             if dict['data']['ifShowPassCode'] == 'N':
-                return False
+                return True
         else:
             print('系统校验订单信息失败')
             return False
