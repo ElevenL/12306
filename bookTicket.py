@@ -182,8 +182,7 @@ class BookTicket(object):
 
         if res.json()['status']:
             print('系统获取队列信息成功')
-            self.confirmSingleForQueue(seatType,repeatSubmitToken,keyCheckIsChange,passenger,trainDict)
-            return True
+            return self.confirmSingleForQueue(seatType,repeatSubmitToken,keyCheckIsChange,passenger,trainDict)
         else:
             print('系统获取队列信息失败')
             return False
@@ -237,8 +236,10 @@ class BookTicket(object):
         if res.json()['data']['submitStatus']:
             send_msg('[12306]: buy ticket success! go to pay!')
             print('已完成订票，请前往12306进行支付')
+            return True
         else:
             print('订票失败,请稍后重试!')
+            return False
 
     def checkUserLogin(self):
         data = {
